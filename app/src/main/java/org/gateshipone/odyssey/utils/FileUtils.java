@@ -38,11 +38,6 @@ public class FileUtils {
     private static final String ARTWORK_DIR = "artworks";
 
     /**
-     * The list of supported artwork filenames. This will be used to check if a local cover exists.
-     */
-    private static final String[] ALLOWED_ARTWORK_FILENAMES = new String[]{"cover.jpg", "cover.jpeg", "cover.png", "folder.jpg", "folder.jpeg", "folder.png", "artwork.jpg", "artwork.jpeg", "artwork.png"};
-
-    /**
      * Create a SHA256 Hash for the given input strings.
      *
      * @param inputStrings The input that will be used as a concatenated string to create the hashed value.
@@ -134,22 +129,5 @@ public class FileUtils {
             }
             artworkDir.delete();
         }
-    }
-
-    /**
-     * Returns a {@link File} containing an artwork image for the given directory. The file has to match one of the supported filetypes and names stored in ALLOWED_ARTWORK_FILENAMES.
-     *
-     * @param directory The directory which should be checked for artwork files.
-     * @return The first artwork {@link File} found or null if no one is found.
-     */
-    public static File getArtworkFileInPath(final String directory) {
-        for (String filename : ALLOWED_ARTWORK_FILENAMES) {
-            final File file = new File(directory + "/" + filename);
-            if (file.exists()) {
-                return file;
-            }
-        }
-
-        return null;
     }
 }
