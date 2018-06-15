@@ -74,12 +74,6 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
 
     private final static String ARG_BITMAP = "bitmap";
 
-    private CoverBitmapLoader mBitmapLoader;
-
-    private Bitmap mBitmap;
-
-    private boolean mHideArtwork;
-
     /**
      * Listener to open an album
      */
@@ -151,14 +145,8 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         // read arguments
         Bundle args = getArguments();
         mArtist = args.getParcelable(ARG_ARTISTMODEL);
-        mBitmap = args.getParcelable(ARG_BITMAP);
 
         setHasOptionsMenu(true);
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        mHideArtwork = sharedPreferences.getBoolean(getContext().getString(R.string.pref_hide_artwork_key), getContext().getResources().getBoolean(R.bool.pref_hide_artwork_default));
-
-        mBitmapLoader = new CoverBitmapLoader(getContext(), this);
 
         return rootView;
     }
@@ -175,33 +163,7 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
         }
 
         // set toolbar behaviour and title
-        if (!mHideArtwork && mBitmap == null) {
-            mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, false);
-            final View rootView = getView();
-            if (rootView != null) {
-                getView().post(() -> {
-                    int width = rootView.getWidth();
-                    mBitmapLoader.getArtistImage(mArtist, width, width);
-                });
-            }
-
-        } else if (!mHideArtwork) {
-            mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, true);
-            mToolbarAndFABCallback.setupToolbarImage(mBitmap);
-            final View rootView = getView();
-            if (rootView != null) {
-                getView().post(() -> {
-                    int width = rootView.getWidth();
-
-                    // Image too small
-                    if (mBitmap.getWidth() < width) {
-                        mBitmapLoader.getArtistImage(mArtist, width, width);
-                    }
-                });
-            }
-        } else {
-            mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, false);
-        }
+        mToolbarAndFABCallback.setupToolbar(mArtist.getArtistName(), false, false, false);
 
         ArtworkManager.getInstance(getContext()).registerOnNewArtistImageListener(this);
     }
@@ -472,11 +434,5 @@ public class ArtistAlbumsFragment extends OdysseyRecyclerFragment<AlbumModel, Ge
 
     @Override
     public void newArtistImage(ArtistModel artist) {
-        if (artist.equals(mArtist)) {
-            if (!mHideArtwork) {
-                int width = getView().getWidth();
-                mBitmapLoader.getArtistImage(mArtist, width, width);
-            }
-        }
     }
 }
